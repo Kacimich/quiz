@@ -120,6 +120,9 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
       overflow:hidden;
+      max-height: calc(100vh - 44px);
+      display: grid;
+      grid-template-rows: auto 1fr auto; /* progress / content / footer */
     }
 
     .progressWrap{
@@ -1091,6 +1094,7 @@
   </script>
 </body>
 </html>
+
 
 
 
