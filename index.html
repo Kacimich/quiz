@@ -613,6 +613,23 @@
       </div>
     </div>
   </div>
+   <!-- Модальное окно: разбор ответов -->
+    <div class="modal" id="reviewModal" aria-hidden="true">
+      <div class="modal__backdrop" data-close="1"></div>
+    
+      <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+        <div class="modal__head">
+          <div>
+            <div class="modal__title" id="reviewModalTitle">Разбор ответов</div>
+            <div class="modal__sub" id="reviewModalSub">—</div>
+          </div>
+          <button class="btn ghost" id="btnCloseReview" type="button">Закрыть</button>
+        </div>
+    
+        <div class="modal__body">
+          <div id="reviewListModal"></div>
+        </div>
+      </div>
 
   <script>
     /**
@@ -1196,26 +1213,10 @@
       syncButtons();
     })();
   </script>
-      <!-- Модальное окно: разбор ответов -->
-    <div class="modal" id="reviewModal" aria-hidden="true">
-      <div class="modal__backdrop" data-close="1"></div>
-    
-      <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
-        <div class="modal__head">
-          <div>
-            <div class="modal__title" id="reviewModalTitle">Разбор ответов</div>
-            <div class="modal__sub" id="reviewModalSub">—</div>
-          </div>
-          <button class="btn ghost" id="btnCloseReview" type="button">Закрыть</button>
-        </div>
-    
-        <div class="modal__body">
-          <div id="reviewListModal"></div>
-        </div>
-      </div>
     </div>
 </body>
 </html>
+
 
 
 
