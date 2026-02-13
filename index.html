@@ -169,6 +169,8 @@
 
     .content{
       padding: 18px 16px 16px;
+      overflow: auto;
+      min-height: 0;
     }
 
     .screen{
@@ -425,6 +427,16 @@
       .qHeader{ flex-direction:column; }
       .progressMeta{ min-width: 120px; }
       .hero h2{ font-size: 22px; }
+    }
+    .content::-webkit-scrollbar{
+      width: 10px;
+    }
+    .content::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+    }
+    .content::-webkit-scrollbar-track{
+      background: rgba(255,255,255,.06);
     }
   </style>
 </head>
@@ -1094,6 +1106,7 @@
   </script>
 </body>
 </html>
+
 
 
 
