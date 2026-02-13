@@ -438,6 +438,72 @@
     .content::-webkit-scrollbar-track{
       background: rgba(255,255,255,.06);
     }
+        /* ===== Модалка разборов ===== */
+    .modal{
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+    }
+    .modal.active{ display:block; }
+    
+    .modal__backdrop{
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+    }
+    
+    .modal__panel{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(920px, calc(100% - 28px));
+      max-height: calc(100vh - 28px);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+    
+    .modal__head{
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    
+    .modal__title{
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .modal__sub{
+      margin-top: 2px;
+      font-size: 12.5px;
+      color: rgba(255,255,255,.68);
+    }
+    
+    .modal__body{
+      padding: 14px 16px 18px;
+      overflow: auto;
+      min-height: 0;
+    }
+    
+    /* аккуратный скроллбар внутри модалки */
+    .modal__body::-webkit-scrollbar{ width: 10px; }
+    .modal__body::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+    }
+    .modal__body::-webkit-scrollbar-track{
+      background: rgba(255,255,255,.06);
+    }
   </style>
 </head>
 <body>
@@ -529,12 +595,8 @@
                 Хотите попробовать ещё раз? Нажмите «Пройти заново».
               </p>
             </div>
-
-            <div class="review">
-              <details>
-                <summary>Посмотреть ответы</summary>
-                <div id="reviewList"></div>
-              </details>
+             <div class="review">
+              <button class="btn" id="btnOpenReview" type="button">Показать разбор</button>
             </div>
           </div>
         </section>
@@ -676,7 +738,11 @@
 
     const resultLine = document.getElementById("resultLine");
     const userNameInput = document.getElementById("userName");
-    const reviewList = document.getElementById("reviewList");
+    const btnOpenReview = document.getElementById("btnOpenReview");
+    const reviewModal = document.getElementById("reviewModal");
+    const btnCloseReview = document.getElementById("btnCloseReview");
+    const reviewListModal = document.getElementById("reviewListModal");
+    const reviewModalSub = document.getElementById("reviewModalSub");
 
     // ====== Вспомогательные функции ======
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
@@ -872,7 +938,8 @@
     const max = maxScore();
     resultLine.textContent = `Вы набрали ${total} из ${max} возможных баллов!`;
 
-    reviewList.innerHTML = "";
+    reviewListModal.innerHTML = "";
+    reviewModalSub.textContent = `Результат: ${state.score} / ${maxScore()} (${Math.round((state.score/maxScore())*100)}%)`;
 
     questions.forEach((q, i) => {
         const ans = state.answers[i];
@@ -930,7 +997,7 @@
         </div>
         `;
 
-        reviewList.appendChild(div);
+        reviewListModal.appendChild(div);
     });
     }
 
@@ -1038,6 +1105,15 @@
       state.score = 0;
       goToStart();
     }
+    function openReviewModal(){
+      reviewModal.classList.add("active");
+      reviewModal.setAttribute("aria-hidden", "false");
+    }
+    
+    function closeReviewModal(){
+      reviewModal.classList.remove("active");
+      reviewModal.setAttribute("aria-hidden", "true");
+    }
 
     // ====== Обработчики кнопок ======
     btnNext.addEventListener("click", () => {
@@ -1093,6 +1169,22 @@
       resetAll();
     });
 
+        btnOpenReview?.addEventListener("click", openReviewModal);
+    btnCloseReview?.addEventListener("click", closeReviewModal);
+    
+    // клик по затемнению закрывает
+    reviewModal?.addEventListener("click", (e) => {
+      if (e.target?.dataset?.close) closeReviewModal();
+    });
+    
+    // Escape закрывает
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && reviewModal.classList.contains("active")) {
+        closeReviewModal();
+      }
+    });
+
+
     // ====== Инициализация ======
     (function init(){
       // Валидация данных по минимуму
@@ -1104,8 +1196,27 @@
       syncButtons();
     })();
   </script>
+      <!-- Модальное окно: разбор ответов -->
+    <div class="modal" id="reviewModal" aria-hidden="true">
+      <div class="modal__backdrop" data-close="1"></div>
+    
+      <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+        <div class="modal__head">
+          <div>
+            <div class="modal__title" id="reviewModalTitle">Разбор ответов</div>
+            <div class="modal__sub" id="reviewModalSub">—</div>
+          </div>
+          <button class="btn ghost" id="btnCloseReview" type="button">Закрыть</button>
+        </div>
+    
+        <div class="modal__body">
+          <div id="reviewListModal"></div>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
+
 
 
 
